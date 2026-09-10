@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧠 Brain Tumor Segmentation & Localization
+#  Brain Tumor Segmentation & Localization
 ### Using Traditional Image Processing Techniques and OpenCV (Python)
 
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -14,7 +14,7 @@
 
 ---
 
-## 📌 Course Information
+##  Course Information
 
 | | |
 |---|---|
@@ -26,19 +26,19 @@
 
 ---
 
-## 📖 Overview
+##  Overview
 
 This project implements a **brain tumor segmentation and localization pipeline** built entirely on classical image processing techniques using **Python** and **OpenCV**. The goal is to detect, segment, and localize tumor regions in MRI brain scans — demonstrating the power of traditional methods such as filtering, thresholding, morphological operations, and contour analysis.
 
-## ✨ Key Features
+##  Key Features
 
-- 🖼️ **Preprocessing** — noise removal and contrast enhancement of MRI scans
-- ✂️ **Segmentation** — tumor region extraction using thresholding / edge-based / region-based techniques
-- 🧹 **Morphological Refinement** — cleanup using erosion, dilation, opening, and closing
-- 📍 **Localization** — bounding box / contour-based tumor localization
-- 📊 **Visualization** — side-by-side comparison of original, processed, and segmented outputs
+-  **Preprocessing** — noise removal and contrast enhancement of MRI scans
+-  **Segmentation** — tumor region extraction using thresholding / edge-based / region-based techniques
+-  **Morphological Refinement** — cleanup using erosion, dilation, opening, and closing
+-  **Localization** — bounding box / contour-based tumor localization
+-  **Visualization** — side-by-side comparison of original, processed, and segmented outputs
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Language:** Python 3.x
 - **Core Library:** OpenCV
@@ -59,14 +59,6 @@ git clone https://github.com/<your-username>/DIP_2026_Project20_Group05.git
 cd DIP_2026_Project20_Group05
 ```
 
-### Usage
-
-```bash
-python main.py --input path/to/mri_image.jpg
-```
-
-> Update the command above to match your actual entry-point script and arguments.
-
 ## 📁 Project Structure
 
 ```
@@ -82,8 +74,6 @@ DIP_2026_Project20_Group05/
 
 <!-- Add sample input/output images here, e.g. -->
 <!-- ![Result](results/sample_output.png) -->
-
-_Add sample segmentation outputs and performance metrics here._
 
 ## 👥 Team — Group 05
 
