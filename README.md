@@ -6,7 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-Image%20Processing-5C3EE8?logo=opencv&logoColor=white)](https://opencv.org/)
 [![Course](https://img.shields.io/badge/ECE501-Digital%20Image%20Processing-blue)]()
-[![Status](https://img.shields.io/badge/Status-Completed-brightgreen)]()
+
 
 **DIP 2026 · Project 20 · Group 05**
 
