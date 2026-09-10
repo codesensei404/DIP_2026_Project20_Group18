@@ -28,7 +28,7 @@
 
 ## 📖 Overview
 
-This project implements a **brain tumor segmentation and localization pipeline** built entirely on classical (non-deep-learning) image processing techniques using **Python** and **OpenCV**. The goal is to detect, segment, and localize tumor regions in MRI brain scans without relying on machine learning models — demonstrating the power of traditional methods such as filtering, thresholding, morphological operations, and contour analysis.
+This project implements a **brain tumor segmentation and localization pipeline** built entirely on classical image processing techniques using **Python** and **OpenCV**. The goal is to detect, segment, and localize tumor regions in MRI brain scans — demonstrating the power of traditional methods such as filtering, thresholding, morphological operations, and contour analysis.
 
 ## ✨ Key Features
 
