@@ -8,7 +8,7 @@
 [![Course](https://img.shields.io/badge/ECE501-Digital%20Image%20Processing-blue)]()
 
 
-**DIP 2026 · Project 20 · Group 05**
+**DIP 2026 · Project 20 · Group 18**
 
 </div>
 
@@ -21,7 +21,7 @@
 | **Course** | ECE501: Digital Image Processing |
 | **Instructor** | Professor Mehul Raval |
 | **Section** | 01 |
-| **Group** | 05 |
+| **Group** | 18 |
 | **Project** | 20 |
 
 ---
@@ -62,7 +62,7 @@ cd DIP_2026_Project20_Group05
 ## 📁 Project Structure
 
 ```
-DIP_2026_Project20_Group05/
+DIP_2026_Project20_Group18/
 ├── data/               # Sample MRI images
 ├── src/                # Source code for preprocessing, segmentation, localization
 ├── results/            # Output images and evaluation results
@@ -75,7 +75,7 @@ DIP_2026_Project20_Group05/
 <!-- Add sample input/output images here, e.g. -->
 <!-- ![Result](results/sample_output.png) -->
 
-## 👥 Team — Group 05
+## 👥 Team — Group 18
 
 | Name | Role |
 |---|---|
