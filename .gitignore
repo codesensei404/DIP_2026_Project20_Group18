@@ -1,0 +1,17 @@
+#Python virtual environment
+venv/
+.venv/
+__pycache__/
+
+#Large MRI files (Don't Push on Git)
+data/
+*.nii
+*.nii.gz
+
+# Outputs
+outputs/
+
+# Config
+.DS_Store
+.vscode/
+.idea/
