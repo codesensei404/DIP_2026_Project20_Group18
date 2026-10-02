@@ -1,17 +1,19 @@
-#Python virtual environment
+# Python / Environment virtual environments
 venv/
 .venv/
 __pycache__/
+*.pyc
 
-#Large MRI files (Don't Push on Git)
+# Local Data and Output Directories (DO NOT push MRI volumes to GitHub)
 data/
+Data/
+Outputs/
+outputs/
 *.nii
 *.nii.gz
 
-# Outputs
-outputs/
-
-# Config
+# System files
 .DS_Store
 .vscode/
 .idea/
+.dist/
