@@ -1,0 +1,5 @@
+failure_mode,patients,percent,patient_numbers
+Under-segmentation (missed tumor),13,65.0,"001, 003, 005, 006, 007, 008, 009, 010, 011, 013, 015, 018, 020"
+Mixed (boundary errors),3,15.0,"012, 014, 019"
+Over-segmentation (extra false positives),2,10.0,"002, 004"
+None (excellent overlap),2,10.0,"016, 017"

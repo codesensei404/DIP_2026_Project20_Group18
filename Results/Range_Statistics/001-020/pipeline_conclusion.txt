@@ -1,0 +1,84 @@
+===========================================================================
+ OVERALL PIPELINE CONCLUSION   (BraTS20_Training_001 -> BraTS20_Training_020)
+===========================================================================
+
+Patients analysed : 20 of 20 in the requested range
+Region evaluated  : WT
+
+---------------------------------------------------------------------------
+ 1. HEADLINE RESULTS
+---------------------------------------------------------------------------
+Dice                : 0.665 +/- 0.179   (median 0.714, range 0.247 - 0.888)
+  95% CI of mean    : 0.588 - 0.734
+IoU (Jaccard)       : 0.521 +/- 0.183
+Precision           : 0.787 +/- 0.179
+Recall (sensitivity): 0.600 +/- 0.211
+HD95 (mm)           : 28.12 +/- 20.71   (median 25.29)
+ASSD (mm)           : 6.96 +/- 5.03   (median 5.23)
+Volume similarity   : 0.816 +/- 0.127
+Pooled Dice         : 0.733  (all voxels combined; large tumors weigh more)
+
+Note: specificity and voxel accuracy are always very high (background dominates the volume),
+so they say little about quality. Dice, precision/recall and HD95 are the meaningful numbers.
+
+---------------------------------------------------------------------------
+ 2. VERDICT
+---------------------------------------------------------------------------
+MODERATE - the pipeline finds the tumor but the extent is often wrong; clear improvements are needed.
+(For context: classical methods on BraTS Whole Tumor usually fall between about 0.5 and 0.8 Dice;
+ deep-learning models reach about 0.9.)
+
+---------------------------------------------------------------------------
+ 3. QUALITY DISTRIBUTION
+---------------------------------------------------------------------------
+Excellent :   2 patients (10%)   [016, 017]
+Good      :   9 patients (45%)   [001, 002, 004, 006, 009, 013, 014, 015, 019]
+Moderate  :   5 patients (25%)   [005, 007, 008, 011, 020]
+Poor      :   4 patients (20%)   [003, 010, 012, 018]
+
+Dice >= 0.50  : 16/20 (80%)
+Dice >= 0.70  : 11/20 (55%)
+Dice >= 0.80  : 3/20 (15%)
+Dice >= 0.85  : 2/20 (10%)
+Dice >= 0.90  : 0/20 (0%)
+HD95 <= 5 mm  : 1/20 (5%)
+HD95 <= 10 mm : 7/20 (35%)
+HD95 <= 20 mm : 10/20 (50%)
+
+---------------------------------------------------------------------------
+ 4. ERROR BEHAVIOUR
+---------------------------------------------------------------------------
+Mean precision 0.787 vs mean recall 0.600.
+-> The pipeline tends to UNDER-segment: what it marks is mostly tumor, but it misses part of the tumor (often edema).
+Volume bias: mean signed error -23.3% (median -30.3%); 3 patients over-estimated, 17 under-estimated.
+
+Failure modes (patients below 'excellent' overlap):
+  Under-segmentation (missed tumor)           :  13 [001, 003, 005, 006, 007, 008, 009, 010, 011, 013, 015, 018, 020]
+  Mixed (boundary errors)                     :   3 [012, 014, 019]
+  Over-segmentation (extra false positives)   :   2 [002, 004]
+  None (excellent overlap)                    :   2 [016, 017]
+
+---------------------------------------------------------------------------
+ 5. CONSISTENCY AND TUMOR-SIZE EFFECT
+---------------------------------------------------------------------------
+Dice std = 0.179: results vary a lot between patients, so one fixed parameter set does not fit all scans.
+Dice vs tumor size: Spearman rho = 0.65 -> the pipeline does WORSE on small tumors.
+Median HD95 = 25.3 mm; 10 patient(s) above 20 mm (large distant errors such as stray false-positive regions).
+
+---------------------------------------------------------------------------
+ 6. BEST AND WORST CASES (by Dice)
+---------------------------------------------------------------------------
+Best : 016 (0.888), 017 (0.850), 006 (0.818)
+Worst: 003 (0.247, Under-segmentation (missed tumor)), 010 (0.342, Under-segmentation (missed tumor)), 018 (0.405, Under-segmentation (missed tumor))
+
+Statistical outliers (1.5 x IQR rule): BraTS20_Training_003: dice low, iou_jaccard low, precision low; BraTS20_Training_010: dice low, iou_jaccard low; BraTS20_Training_012: dice low; BraTS20_Training_018: dice low
+
+---------------------------------------------------------------------------
+ 7. SUGGESTED NEXT STEPS
+---------------------------------------------------------------------------
+1. Recall is the weak point: lower the threshold or use hysteresis thresholding / region growing, and rely on FLAIR or T2 (not T1ce) for the Whole Tumor so edema is included.
+2. Normalize intensities per patient (z-score or percentile inside a brain mask) so a single threshold behaves the same on every scan.
+3. Large HD95 values point to distant false-positive blobs; connected-component filtering and morphological opening should remove them.
+4. Re-run this script after each pipeline change (bump PIPELINE_VERSION) and compare the mean Dice, HD95 and failure-mode counts.
+
+===========================================================================

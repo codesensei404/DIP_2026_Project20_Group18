@@ -1,0 +1,6 @@
+quality_tier,patients,percent,patient_numbers
+Excellent,2,10.0,"016, 017"
+Good,9,45.0,"001, 002, 004, 006, 009, 013, 014, 015, 019"
+Moderate,5,25.0,"005, 007, 008, 011, 020"
+Poor,4,20.0,"003, 010, 012, 018"
+No data,0,0.0,

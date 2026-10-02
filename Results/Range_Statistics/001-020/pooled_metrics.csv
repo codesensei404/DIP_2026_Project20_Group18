@@ -1,0 +1,16 @@
+metric,value
+pooled_true_positive_voxels,1104354.0
+pooled_true_negative_voxels,176649307.0
+pooled_false_positive_voxels,204576.0
+pooled_false_negative_voxels,601763.0
+pooled_dice,0.7325617146266709
+pooled_iou_jaccard,0.5779861024246177
+pooled_precision,0.8437074557080975
+pooled_sensitivity_recall,0.647290895055849
+pooled_specificity,0.9988432484685676
+pooled_false_positive_rate,0.0011567515314323067
+pooled_false_negative_rate,0.352709104944151
+pooled_voxel_accuracy,0.9954842125896057
+total_predicted_volume_mm3,1308930.0
+total_ground_truth_volume_mm3,1706117.0
+pooled_signed_relative_volume_error,-0.23280173634047371
