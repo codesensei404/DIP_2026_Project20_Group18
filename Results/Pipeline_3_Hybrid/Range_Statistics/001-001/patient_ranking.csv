@@ -1,2 +1,0 @@
-rank,patient_id,quality_tier,failure_mode,dice,iou_jaccard,precision,sensitivity_recall,hd95_mm,assd_mm,signed_relative_volume_error
-1,BraTS20_Training_001,Excellent,None (excellent overlap),0.9144638537504198,0.8424075576937735,0.9444441651795812,0.8863283627151746,5.0990195135927845,1.523801139085137,-0.06153439727520179
