@@ -840,8 +840,15 @@ def evaluate(
     }
 
     # --------------------------------------------------------
-    # Output paths
+    # Output paths (Supports both method-tagged and standard names)
     # --------------------------------------------------------
+
+    method_tag = config.get("method_tag", "")
+    if not method_tag:
+        if "watershed" in prediction_path.lower():
+            method_tag = "watershed"
+        elif "threshold" in prediction_path.lower() or "v1" in str(config.get("pipeline_version", "")):
+            method_tag = "thresholding"
 
     output_csv = os.path.join(
         table_dir,
@@ -851,6 +858,15 @@ def evaluate(
     output_json = os.path.join(
         table_dir,
         f"{patient_id}_{region}_evaluation.json"
+    )
+
+    tagged_csv = (
+        os.path.join(table_dir, f"{patient_id}_{region}_evaluation_{method_tag}.csv")
+        if method_tag else None
+    )
+    tagged_json = (
+        os.path.join(table_dir, f"{patient_id}_{region}_evaluation_{method_tag}.json")
+        if method_tag else None
     )
 
     # --------------------------------------------------------
@@ -879,6 +895,13 @@ def evaluate(
                 value
             ])
 
+    if tagged_csv and tagged_csv != output_csv:
+        with open(tagged_csv, "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(["Metric", "Value"])
+            for key, value in results.items():
+                writer.writerow([key, value])
+
     # --------------------------------------------------------
     # JSON
     # --------------------------------------------------------
@@ -893,6 +916,10 @@ def evaluate(
             file,
             indent=4
         )
+
+    if tagged_json and tagged_json != output_json:
+        with open(tagged_json, "w") as file:
+            json.dump(results, file, indent=4)
 
     # --------------------------------------------------------
     # Display
@@ -1018,3 +1045,51 @@ def evaluate(
     print("=" * 65)
 
     return results
+
+# ============================================================
+# STANDALONE EXECUTION
+# ============================================================
+
+if __name__ == "__main__":
+    _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_DIR = os.path.dirname(_THIS_DIR)
+
+    print()
+    print("=" * 75)
+    print("       BRAIN TUMOR SEGMENTATION EVALUATION (STANDALONE)")
+    print("=" * 75)
+
+    default_patient = "BraTS20_Training_001"
+    user_input = input(f"Enter patient ID (default: {default_patient}): ").strip()
+    patient_id = user_input if user_input else default_patient
+
+    print("Choose segmentation mask to evaluate:")
+    print("  [1] Pipeline 1.0 (Thresholding)")
+    print("  [2] Pipeline 2.0 (Watershed)")
+    choice = input("Choice (1/2, default: 1): ").strip()
+
+    if choice == "2":
+        pred_path = os.path.join(PROJECT_DIR, "Outputs", "Pipeline_2_Watershed", "Segmented", patient_id, f"{patient_id}_segmentation_watershed.nii.gz")
+        if not os.path.exists(pred_path):
+            pred_path = os.path.join(PROJECT_DIR, "Outputs", "Pipeline_2_Watershed", "Segmented", patient_id, f"{patient_id}_segmented.nii.gz")
+        tbl_dir = os.path.join(PROJECT_DIR, "Results", "Pipeline_2_Watershed", "Tables", patient_id)
+        method_tag = "watershed"
+    else:
+        pred_path = os.path.join(PROJECT_DIR, "Outputs", "Pipeline_1_Thresholding", "Segmented", patient_id, f"{patient_id}_segmentation_thresholding.nii.gz")
+        if not os.path.exists(pred_path):
+            pred_path = os.path.join(PROJECT_DIR, "Outputs", "Segmented", patient_id, f"{patient_id}_segmented.nii.gz")
+        tbl_dir = os.path.join(PROJECT_DIR, "Results", "Pipeline_1_Thresholding", "Tables", patient_id)
+        method_tag = "thresholding"
+
+    gt_path = os.path.join(PROJECT_DIR, "data", "Training", patient_id, f"{patient_id}_seg.nii")
+
+    config = {
+        "patient_id": patient_id,
+        "run_id": f"standalone_eval_{method_tag}_{patient_id}",
+        "table_dir": tbl_dir,
+        "method_tag": method_tag,
+    }
+
+    os.makedirs(tbl_dir, exist_ok=True)
+    evaluate(pred_path, gt_path, "WT", config)
+    print(f"\nStandalone evaluation complete for {patient_id} ({method_tag})!")

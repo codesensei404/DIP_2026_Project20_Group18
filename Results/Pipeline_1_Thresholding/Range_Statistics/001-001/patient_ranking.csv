@@ -1,0 +1,2 @@
+rank,patient_id,quality_tier,failure_mode,dice,iou_jaccard,precision,sensitivity_recall,hd95_mm,assd_mm,signed_relative_volume_error
+1,BraTS20_Training_001,Good,Under-segmentation (missed tumor),0.7441441654217913,0.5925394817883052,0.9943665527879252,0.5945353077427481,8.246211251235321,3.254792199178845,-0.4020964340807344

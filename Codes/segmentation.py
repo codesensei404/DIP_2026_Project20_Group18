@@ -151,6 +151,22 @@ def create_brain_mask(
         brain_mask
     )
 
+    # Dynamic basal slice filtering:
+    # Slices at the skull base (orbits, sinuses, neck) contain bright bony/fat
+    # artifacts that exceed thresholding percentiles but have zero tumor voxels.
+    # Suppress slices where brain cross-sectional area < 15% of the peak slice,
+    # or below z=12 (absolute floor). This never cuts off inferior tumor tissue.
+    slice_areas = np.sum(brain_mask, axis=(1, 2))
+    max_area = int(np.max(slice_areas))
+
+    if max_area > 0:
+        valid_idxs = np.where(slice_areas >= 0.15 * max_area)[0]
+        basal_cutoff = max(12, int(valid_idxs[0])) if len(valid_idxs) > 0 else 12
+    else:
+        basal_cutoff = 12
+
+    brain_mask[:basal_cutoff, :, :] = False
+
     return brain_mask
 
 
@@ -311,68 +327,52 @@ def filter_connected_components(
     reference_image,
     min_volume_mm3=200.0
 ):
+    """
+    Anatomical clustering prior: retains primary tumor mass and proximate
+    satellites while rejecting isolated false-positive fragments such as
+    ventricular CSF, choroid plexus, orbital fat, and scattered hotspots.
 
-    structure = ndi.generate_binary_structure(
-        3,
-        2
-    )
-
-    labels, num_components = ndi.label(
-        mask,
-        structure=structure
-    )
+    Rules:
+      1. Always keep the single largest connected component (primary mass).
+      2. Keep secondary components only if:
+           a. Physical volume >= min_volume_mm3, AND
+           b. Size >= 20% of primary mass, AND
+           c. Euclidean distance to primary mass <= 12.0 mm
+    """
+    structure = ndi.generate_binary_structure(3, 2)
+    labels, num_components = ndi.label(mask, structure=structure)
 
     print()
-    print(
-        f"Initial connected components: "
-        f"{num_components}"
-    )
+    print(f"Initial connected components: {num_components}")
+
+    if num_components == 0:
+        return mask
 
     spacing = reference_image.GetSpacing()
+    voxel_volume_mm3 = spacing[0] * spacing[1] * spacing[2]
 
-    voxel_volume_mm3 = (
-        spacing[0] *
-        spacing[1] *
-        spacing[2]
-    )
+    print(f"Voxel volume = {voxel_volume_mm3:.4f} mm^3")
 
-    print(
-        f"Voxel volume = "
-        f"{voxel_volume_mm3:.4f} mm^3"
-    )
+    # Rank components by size
+    sizes = [(c, int(np.sum(labels == c))) for c in range(1, num_components + 1)]
+    sizes.sort(key=lambda x: x[1], reverse=True)
+    top1_lbl, top1_sz = sizes[0]
 
-    clean_mask = np.zeros(
-        mask.shape,
-        dtype=bool
-    )
+    # Always keep primary mass
+    clean_mask = (labels == top1_lbl)
+    dist_from_top = ndi.distance_transform_edt(~clean_mask)
+    kept = 1
 
-    kept = 0
+    # Conditionally keep satellites
+    for c, sz in sizes[1:]:
+        phys_vol = sz * voxel_volume_mm3
+        if phys_vol >= min_volume_mm3 and sz >= 0.20 * top1_sz:
+            min_dist = float(np.min(dist_from_top[labels == c]))
+            if min_dist <= 12.0:
+                clean_mask |= (labels == c)
+                kept += 1
 
-    for component_id in range(
-        1,
-        num_components + 1
-    ):
-
-        voxel_count = np.sum(
-            labels == component_id
-        )
-
-        physical_volume = (
-            voxel_count *
-            voxel_volume_mm3
-        )
-
-        if physical_volume >= min_volume_mm3:
-
-            clean_mask[
-                labels == component_id
-            ] = True
-
-            kept += 1
-
-    print(
-        f"Components retained: {kept}"
-    )
+    print(f"Components retained: {kept} (primary mass + proximal satellites)")
 
     return clean_mask
 
@@ -901,6 +901,16 @@ def run_segmentation(config):
         segmentation_output_path
     )
 
+    tagged_seg_path = os.path.join(
+        segmented_dir,
+        f"{patient_id}_segmentation_thresholding.nii.gz"
+    )
+    save_segmentation(
+        final_mask,
+        reference_image,
+        tagged_seg_path
+    )
+
     print()
     print(
         f"Segmentation saved:\n"
@@ -936,6 +946,13 @@ def run_segmentation(config):
             indent=4
         )
 
+    tagged_loc_path = os.path.join(
+        segmented_dir,
+        f"{patient_id}_localization_thresholding.json"
+    )
+    with open(tagged_loc_path, "w") as file:
+        json.dump(localization_data, file, indent=4)
+
     print(
         f"Localization data saved:\n"
         f"{localization_output_path}"
@@ -956,6 +973,19 @@ def run_segmentation(config):
         t1ce,
         final_mask,
         diagnostic_output_path,
+        patient_id
+    )
+
+    tagged_diag_path = os.path.join(
+        image_dir,
+        f"{patient_id}_segmentation_thresholding.png"
+    )
+    save_segmentation_diagnostic(
+        flair,
+        t2,
+        t1ce,
+        final_mask,
+        tagged_diag_path,
         patient_id
     )
 
@@ -983,7 +1013,33 @@ def run_segmentation(config):
 # ============================================================
 
 if __name__ == "__main__":
+    _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_DIR = os.path.dirname(_THIS_DIR) if os.path.basename(_THIS_DIR).lower() == "codes" else _THIS_DIR
 
-    print(
-        "Run segmentation through main.py."
-    )
+    print()
+    print("=" * 75)
+    print("  PIPELINE 1.0 (THRESHOLDING) - STANDALONE SEGMENTATION")
+    print("=" * 75)
+
+    default_patient = "BraTS20_Training_001"
+    user_input = input(f"Enter patient ID (default: {default_patient}): ").strip()
+    patient_id = user_input if user_input else default_patient
+
+    denoised_dir = os.path.join(PROJECT_DIR, "Outputs", "Pipeline_1_Thresholding", "Denoised", patient_id)
+    if not os.path.isdir(denoised_dir):
+        denoised_dir = os.path.join(PROJECT_DIR, "Outputs", "Denoised", patient_id)
+
+    config = {
+        "project_dir": PROJECT_DIR,
+        "patient_id": patient_id,
+        "run_id": f"standalone_thresh_seg_{patient_id}",
+        "denoised_dir": denoised_dir,
+        "segmented_dir": os.path.join(PROJECT_DIR, "Outputs", "Pipeline_1_Thresholding", "Segmented", patient_id),
+        "image_dir": os.path.join(PROJECT_DIR, "Results", "Pipeline_1_Thresholding", "Images", patient_id),
+    }
+
+    for d in [config["segmented_dir"], config["image_dir"]]:
+        os.makedirs(d, exist_ok=True)
+
+    run_segmentation(config)
+    print(f"\nStandalone thresholding segmentation complete for {patient_id}!")

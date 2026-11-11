@@ -1,0 +1,11 @@
+===========================================================================
+ PIPELINE EVALUATION: PIPELINE 2.0 (WATERSHED)
+ Range: BraTS20_Training_002 -> BraTS20_Training_002
+===========================================================================
+Patients evaluated : 1
+Mean Dice           : 0.441 +/- n/a (Median: 0.441)
+Mean IoU (Jaccard)  : 0.283
+Mean Sensitivity    : 0.896
+Mean Precision      : 0.292
+Mean HD95 (mm)      : 57.91 mm
+===========================================================================

@@ -1,0 +1,9 @@
+criterion,patients_passing,patients_evaluated,pass_rate_percent
+Dice >= 0.50,1,1,100.0
+Dice >= 0.70,1,1,100.0
+Dice >= 0.80,0,1,0.0
+Dice >= 0.85,0,1,0.0
+Dice >= 0.90,0,1,0.0
+HD95 <= 5 mm,0,1,0.0
+HD95 <= 10 mm,0,1,0.0
+HD95 <= 20 mm,0,1,0.0

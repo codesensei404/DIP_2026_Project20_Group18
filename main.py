@@ -85,12 +85,14 @@ TRAINING_DIR = os.path.join(
 
 OUTPUTS_DIR = os.path.join(
     PROJECT_DIR,
-    "Outputs"
+    "Outputs",
+    "Pipeline_1_Thresholding"
 )
 
 RESULTS_DIR = os.path.join(
     PROJECT_DIR,
-    "Results"
+    "Results",
+    "Pipeline_1_Thresholding"
 )
 
 
@@ -206,6 +208,10 @@ def build_config(patient_id):
         "project_dir": PROJECT_DIR,
 
         "codes_dir": CODES_DIR,
+
+        "pipeline_name": "Pipeline_1_Thresholding",
+
+        "method_tag": "thresholding",
 
         "patient_id": patient_id,
 

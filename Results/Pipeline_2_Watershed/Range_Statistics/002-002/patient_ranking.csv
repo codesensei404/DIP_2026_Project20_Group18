@@ -1,0 +1,2 @@
+rank,patient_id,quality_tier,failure_mode,dice,iou_jaccard,precision,sensitivity_recall,hd95_mm,assd_mm,signed_relative_volume_error
+1,BraTS20_Training_002,Poor,Over-segmentation (extra false positives),0.4408555151933651,0.2827547539624206,0.292391193136142,0.8956094794651385,57.91372894228103,20.573296183688598,2.0630521728748805

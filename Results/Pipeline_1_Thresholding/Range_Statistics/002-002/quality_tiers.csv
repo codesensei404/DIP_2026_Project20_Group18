@@ -1,0 +1,6 @@
+quality_tier,patients,percent,patient_numbers
+Excellent,0,0.0,
+Good,1,100.0,002
+Moderate,0,0.0,
+Poor,0,0.0,
+No data,0,0.0,

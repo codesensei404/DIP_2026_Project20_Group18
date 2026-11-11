@@ -390,6 +390,7 @@ def preprocess_sequence(
         denoised
     )
 
+    # Save standard outputs
     save_nifti(
         denoised,
         sitk_image,
@@ -400,6 +401,21 @@ def preprocess_sequence(
         clahe,
         sitk_image,
         clahe_output_path
+    )
+
+    # Save method-tagged outputs
+    tagged_denoised = os.path.join(denoised_dir, f"{patient_id}_{sequence_name}_denoised_thresholding.nii.gz")
+    tagged_clahe = os.path.join(clahe_dir, f"{patient_id}_{sequence_name}_clahe_thresholding.nii.gz")
+    tagged_diag = os.path.join(image_dir, f"{patient_id}_{sequence_name}_preprocessing_thresholding.png")
+    save_nifti(denoised, sitk_image, tagged_denoised)
+    save_nifti(clahe, sitk_image, tagged_clahe)
+    save_preprocessing_diagnostic(
+        normalized,
+        denoised,
+        clahe,
+        sequence_name,
+        tagged_diag,
+        patient_id
     )
 
     save_preprocessing_diagnostic(
@@ -469,12 +485,34 @@ def run_preprocessing(config):
 # ============================================================
 
 if __name__ == "__main__":
+    _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_DIR = os.path.dirname(_THIS_DIR) if os.path.basename(_THIS_DIR).lower() == "codes" else _THIS_DIR
 
-    print(
-        "This module is normally executed "
-        "through main.py."
-    )
+    print()
+    print("=" * 75)
+    print("  PIPELINE 1.0 (THRESHOLDING) - STANDALONE PREPROCESSING")
+    print("=" * 75)
 
-    print(
-        "Run: python main.py"
-    )
+    default_patient = "BraTS20_Training_001"
+    user_input = input(f"Enter patient ID (default: {default_patient}): ").strip()
+    patient_id = user_input if user_input else default_patient
+
+    config = {
+        "project_dir": PROJECT_DIR,
+        "patient_id": patient_id,
+        "run_id": f"standalone_thresh_prep_{patient_id}",
+        "data_dir": os.path.join(PROJECT_DIR, "data", "Training", patient_id),
+        "denoised_dir": os.path.join(PROJECT_DIR, "Outputs", "Pipeline_1_Thresholding", "Denoised", patient_id),
+        "clahe_dir": os.path.join(PROJECT_DIR, "Outputs", "Pipeline_1_Thresholding", "CLAHE", patient_id),
+        "image_dir": os.path.join(PROJECT_DIR, "Results", "Pipeline_1_Thresholding", "Images", patient_id),
+    }
+
+    if not os.path.isdir(config["data_dir"]):
+        print(f"Error: Data directory not found: {config['data_dir']}")
+        sys.exit(1)
+
+    for d in [config["denoised_dir"], config["clahe_dir"], config["image_dir"]]:
+        os.makedirs(d, exist_ok=True)
+
+    run_preprocessing(config)
+    print(f"\nStandalone preprocessing complete for {patient_id} (Thresholding)!")

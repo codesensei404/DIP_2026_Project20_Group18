@@ -602,27 +602,38 @@ def save_results(
         f"{patient_id}_morphological_analysis.json"
     )
 
-    with open(
-        output_csv,
-        "w",
-        newline=""
-    ) as file:
+    tagged_csv = os.path.join(
+        table_dir,
+        f"{patient_id}_morphological_analysis_thresholding.csv"
+    )
 
-        writer = csv.writer(
-            file
-        )
+    tagged_json = os.path.join(
+        table_dir,
+        f"{patient_id}_morphological_analysis_thresholding.json"
+    )
 
-        writer.writerow([
-            "Parameter",
-            "Value"
-        ])
+    for c_path in [output_csv, tagged_csv]:
+        with open(
+            c_path,
+            "w",
+            newline=""
+        ) as file:
 
-        for key, value in results.items():
+            writer = csv.writer(
+                file
+            )
 
             writer.writerow([
-                key,
-                value
+                "Parameter",
+                "Value"
             ])
+
+            for key, value in results.items():
+
+                writer.writerow([
+                    key,
+                    value
+                ])
 
     results_with_metadata = {
         "patient_id": patient_id,
@@ -631,16 +642,17 @@ def save_results(
         **results
     }
 
-    with open(
-        output_json,
-        "w"
-    ) as file:
+    for j_path in [output_json, tagged_json]:
+        with open(
+            j_path,
+            "w"
+        ) as file:
 
-        json.dump(
-            results_with_metadata,
-            file,
-            indent=4
-        )
+            json.dump(
+                results_with_metadata,
+                file,
+                indent=4
+            )
 
     print()
     print("=" * 65)
@@ -775,8 +787,31 @@ def analyze_mask(
 # ============================================================
 
 if __name__ == "__main__":
+    _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_DIR = os.path.dirname(_THIS_DIR) if os.path.basename(_THIS_DIR).lower() == "codes" else _THIS_DIR
 
-    print(
-        "Run morphological analysis "
-        "through main.py."
-    )
+    print()
+    print("=" * 75)
+    print("  PIPELINE 1.0 (THRESHOLDING) - STANDALONE MORPHOLOGICAL ANALYSIS")
+    print("=" * 75)
+
+    default_patient = "BraTS20_Training_001"
+    user_input = input(f"Enter patient ID (default: {default_patient}): ").strip()
+    patient_id = user_input if user_input else default_patient
+
+    mask_path = os.path.join(PROJECT_DIR, "Outputs", "Pipeline_1_Thresholding", "Segmented", patient_id, f"{patient_id}_segmentation_thresholding.nii.gz")
+    if not os.path.isfile(mask_path):
+        mask_path = os.path.join(PROJECT_DIR, "Outputs", "Segmented", patient_id, f"{patient_id}_segmented.nii.gz")
+
+    table_dir = os.path.join(PROJECT_DIR, "Results", "Pipeline_1_Thresholding", "Tables", patient_id)
+    os.makedirs(table_dir, exist_ok=True)
+
+    config = {
+        "project_dir": PROJECT_DIR,
+        "patient_id": patient_id,
+        "run_id": f"standalone_thresh_morph_{patient_id}",
+        "table_dir": table_dir,
+    }
+
+    analyze_mask(mask_path, config)
+    print(f"\nStandalone morphological analysis complete for {patient_id} (Thresholding)!")

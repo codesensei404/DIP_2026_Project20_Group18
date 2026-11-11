@@ -1,0 +1,11 @@
+===========================================================================
+ PIPELINE EVALUATION: PIPELINE 1.0 (THRESHOLDING)
+ Range: BraTS20_Training_001 -> BraTS20_Training_001
+===========================================================================
+Patients evaluated : 1
+Mean Dice           : 0.744 +/- n/a (Median: 0.744)
+Mean IoU (Jaccard)  : 0.593
+Mean Sensitivity    : 0.595
+Mean Precision      : 0.994
+Mean HD95 (mm)      : 8.25 mm
+===========================================================================

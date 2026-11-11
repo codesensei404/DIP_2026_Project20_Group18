@@ -1,0 +1,6 @@
+Metric,Hybrid_vs_P1_Mean_Delta,Hybrid_vs_P1_t_pval,Hybrid_vs_P1_Wilcoxon_pval,Hybrid_vs_P1_Sig,Hybrid_vs_P2_Mean_Delta,Hybrid_vs_P2_t_pval,Hybrid_vs_P2_Wilcoxon_pval,Hybrid_vs_P2_Sig
+dice,0.17031968832862854,,1.0,False,0.05304651845889241,,1.0,False
+iou_jaccard,0.24986807590546833,,1.0,False,0.08583769061952962,,1.0,False
+sensitivity_recall,0.29179305497242647,,1.0,False,0.1157284447987772,,1.0,False
+precision,-0.049922387608344,,1.0,False,-0.03205659401746319,,1.0,False
+hd95_mm,-3.1471917376425367,,1.0,False,-1.609184418906585,,1.0,False

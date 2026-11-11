@@ -1,0 +1,12 @@
+,dice,iou_jaccard,precision,sensitivity_recall,specificity,hd95_mm,assd_mm,ground_truth_volume_mm3,predicted_volume_mm3,relative_volume_error,volume_similarity
+dice,,,,,,,,,,,
+iou_jaccard,,,,,,,,,,,
+precision,,,,,,,,,,,
+sensitivity_recall,,,,,,,,,,,
+specificity,,,,,,,,,,,
+hd95_mm,,,,,,,,,,,
+assd_mm,,,,,,,,,,,
+ground_truth_volume_mm3,,,,,,,,,,,
+predicted_volume_mm3,,,,,,,,,,,
+relative_volume_error,,,,,,,,,,,
+volume_similarity,,,,,,,,,,,
