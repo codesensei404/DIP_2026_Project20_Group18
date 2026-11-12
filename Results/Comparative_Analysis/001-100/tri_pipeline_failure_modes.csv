@@ -1,0 +1,5 @@
+Failure_Mode,P1_Count,P2_Count,P3_Count
+Mixed (boundary errors),13,13,17
+None (excellent overlap),20,34,31
+Over-segmentation,3,35,41
+Under-segmentation,64,18,11

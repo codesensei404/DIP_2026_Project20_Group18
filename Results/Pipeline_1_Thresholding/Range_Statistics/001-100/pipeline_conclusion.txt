@@ -1,0 +1,35 @@
+===========================================================================
+ PIPELINE EVALUATION: PIPELINE 1.0 (THRESHOLDING)
+ Range: BraTS20_Training_001 -> BraTS20_Training_100
+===========================================================================
+Patients evaluated      : 100
+
+OVERLAP
+  Mean Dice             : 0.661 +/- 0.229
+                          Median 0.737  |  95% CI [0.615, 0.702]
+  Mean IoU (Jaccard)    : 0.531
+  Mean Bounding-Box IoU : 0.514
+  Mean Volume Similarity: 0.759
+
+CLASSIFICATION
+  Mean Sensitivity      : 0.572
+  Mean Precision        : 0.846
+  Mean Specificity      : 0.999
+  Mean FPR              : 0.001
+  Mean FNR              : 0.428
+  Mean Accuracy         : 0.996
+
+BOUNDARY
+  Mean HD95             : 18.05 mm
+  Mean ASSD             : 7.33 mm
+
+VOLUME
+  Mean Relative Error   : 0.374
+  Mean Signed Rel Err   : -0.311
+
+QUALITY TIERS
+  Excellent (>= 0.85)   : 20 patients
+  Good      (>= 0.70)   : 40 patients
+  Moderate  (>= 0.50)   : 21 patients
+  Poor      (<  0.50)   : 19 patients
+===========================================================================

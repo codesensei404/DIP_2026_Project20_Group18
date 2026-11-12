@@ -1,0 +1,49 @@
+==============================================================================
+ TRI-PIPELINE COMPARATIVE EVALUATION
+ Range: BraTS20_Training_001 -> BraTS20_Training_100
+ Patients compared: 100
+==============================================================================
+
+MEAN DICE SCORES
+  Pipeline 1 (Thresholding) : 0.6607
+  Pipeline 2 (Watershed)    : 0.6685
+  Pipeline 3 (Hybrid)       : 0.7128
+
+MEAN IoU (JACCARD)
+  Pipeline 1                : 0.5306
+  Pipeline 2                : 0.5494
+  Pipeline 3                : 0.5915
+
+MEAN HD95 (mm)
+  Pipeline 1                : 18.0455
+  Pipeline 2                : 28.2203
+  Pipeline 3                : 20.1737
+
+MEAN SENSITIVITY (RECALL)
+  Pipeline 1                : 0.5718
+  Pipeline 2                : 0.7389
+  Pipeline 3                : 0.8083
+
+MEAN PRECISION
+  Pipeline 1                : 0.8463
+  Pipeline 2                : 0.6719
+  Pipeline 3                : 0.6743
+
+MEAN VOLUME SIMILARITY
+  Pipeline 1                : 0.7592
+  Pipeline 2                : 0.7983
+  Pipeline 3                : 0.8309
+
+WIN TALLY (best Dice per patient)
+        Pipeline  Patient_Count  Win_Percentage
+      P3: Hybrid             38            38.0
+   P2: Watershed             36            36.0
+P1: Thresholding             26            26.0
+
+DELTA DICE: P3 (Hybrid) vs P1 (Thresholding)
+  Mean  : 0.0520
+DELTA DICE: P3 (Hybrid) vs P2 (Watershed)
+  Mean  : 0.0443
+DELTA DICE: P2 (Watershed) vs P1 (Thresholding)
+  Mean  : 0.0078
+==============================================================================

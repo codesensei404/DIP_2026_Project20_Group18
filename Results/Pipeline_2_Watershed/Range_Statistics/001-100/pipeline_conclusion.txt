@@ -1,0 +1,35 @@
+===========================================================================
+ PIPELINE EVALUATION: PIPELINE 2.0 (WATERSHED)
+ Range: BraTS20_Training_001 -> BraTS20_Training_100
+===========================================================================
+Patients evaluated      : 100
+
+OVERLAP
+  Mean Dice             : 0.669 +/- 0.256
+                          Median 0.756  |  95% CI [0.618, 0.716]
+  Mean IoU (Jaccard)    : 0.549
+  Mean Bounding-Box IoU : 0.504
+  Mean Volume Similarity: 0.798
+
+CLASSIFICATION
+  Mean Sensitivity      : 0.739
+  Mean Precision        : 0.672
+  Mean Specificity      : 0.996
+  Mean FPR              : 0.004
+  Mean FNR              : 0.261
+  Mean Accuracy         : 0.995
+
+BOUNDARY
+  Mean HD95             : 28.22 mm
+  Mean ASSD             : 10.65 mm
+
+VOLUME
+  Mean Relative Error   : 0.883
+  Mean Signed Rel Err   : 0.701
+
+QUALITY TIERS
+  Excellent (>= 0.85)   : 34 patients
+  Good      (>= 0.70)   : 26 patients
+  Moderate  (>= 0.50)   : 17 patients
+  Poor      (<  0.50)   : 23 patients
+===========================================================================

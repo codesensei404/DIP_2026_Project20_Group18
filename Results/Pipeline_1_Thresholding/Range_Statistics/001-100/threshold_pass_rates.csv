@@ -1,0 +1,14 @@
+criterion,patients_passing,patients_evaluated,pass_rate_percent
+Dice >= 0.50,81,100,81.0
+Dice >= 0.70,60,100,60.0
+Dice >= 0.80,33,100,33.0
+Dice >= 0.85,20,100,20.0
+Dice >= 0.90,4,100,4.0
+HD95 <= 5 mm,17,100,17.0
+HD95 <= 10 mm,55,100,55.0
+HD95 <= 20 mm,70,100,70.0
+IoU >= 0.70,25,100,25.0
+Sensitivity >= 0.80,16,100,16.0
+Precision >= 0.70,85,100,85.0
+VolSim >= 0.80,52,100,52.0
+ASSD <= 10 mm,84,100,84.0

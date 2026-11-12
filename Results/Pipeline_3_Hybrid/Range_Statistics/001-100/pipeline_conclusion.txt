@@ -1,0 +1,35 @@
+===========================================================================
+ PIPELINE EVALUATION: PIPELINE 3.0 (HYBRID)
+ Range: BraTS20_Training_001 -> BraTS20_Training_100
+===========================================================================
+Patients evaluated      : 100
+
+OVERLAP
+  Mean Dice             : 0.713 +/- 0.224
+                          Median 0.802  |  95% CI [0.666, 0.753]
+  Mean IoU (Jaccard)    : 0.592
+  Mean Bounding-Box IoU : 0.571
+  Mean Volume Similarity: 0.831
+
+CLASSIFICATION
+  Mean Sensitivity      : 0.808
+  Mean Precision        : 0.674
+  Mean Specificity      : 0.997
+  Mean FPR              : 0.003
+  Mean FNR              : 0.192
+  Mean Accuracy         : 0.996
+
+BOUNDARY
+  Mean HD95             : 20.17 mm
+  Mean ASSD             : 7.72 mm
+
+VOLUME
+  Mean Relative Error   : 0.532
+  Mean Signed Rel Err   : 0.415
+
+QUALITY TIERS
+  Excellent (>= 0.85)   : 31 patients
+  Good      (>= 0.70)   : 37 patients
+  Moderate  (>= 0.50)   : 19 patients
+  Poor      (<  0.50)   : 13 patients
+===========================================================================
