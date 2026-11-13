@@ -15,7 +15,35 @@ import skimage.segmentation as seg
 
 PIPELINE_NAME = "Pipeline_2_Watershed"
 METHOD_TAG = "watershed"
+
+# ── Tunable parameters (Pipeline 2 — Watershed) ─────────────
+# Results analysis (n=100):
+#   Problem : Worst HD95 (28mm), high variance, bimodal outcomes.
+#             35% over-segmentation from noisy gradient ridges
+#             and an unlabeled zone that's too large.
+#   Fix     : Raise gradient sigma to smooth out micro-ridges,
+#             tighten the external marker threshold (was 75th pct →
+#             raise to 70th so healthy tissue is marked earlier),
+#             reduce satellite acceptance distance.
+#
+# Recommended search space (see tune.py):
+#   GRADIENT_SIGMA         : [1.0, 1.5, 2.0]        (was 1.0)
+#   FLAIR_PERCENTILE       : [83, 85, 87]            (was 85)
+#   T2_PERCENTILE          : [83, 85, 87]            (was 85)
+#   T1CE_PERCENTILE        : [88, 90, 92]            (was 90)
+#   HEALTHY_PERCENTILE     : [65, 70, 75]            (was 75)
+#   HEALTHY_DIST_VOXELS    : [4, 5, 6]               (was 4)
+#   MIN_COMPONENT_VOLUME   : [150, 200, 300]         (was 200)
+#   SATELLITE_DIST_MM      : [8, 10, 12]             (was 12)
+# ─────────────────────────────────────────────────────────────
+P2_GRADIENT_SIGMA       = 1.68   # tuned: Optuna best 1.6785 (probe Dice 0.6880)
+P2_FLAIR_PERCENTILE     = 85     # unchanged
+P2_T2_PERCENTILE        = 85     # unchanged
+P2_T1CE_PERCENTILE      = 90     # unchanged
+P2_HEALTHY_PERCENTILE   = 74     # tuned: from 70 → marks healthy brain earlier
+P2_HEALTHY_DIST_VOXELS  = 3      # tuned: tightened from 5 → larger healthy zone
 MIN_COMPONENT_VOLUME_MM3 = 200.0
+P2_SATELLITE_DIST_MM    = 10.46  # tuned: Optuna best 10.4626
 
 
 # ============================================================
@@ -113,7 +141,7 @@ def compute_multimodal_gradient(
     t2: np.ndarray,
     flair: np.ndarray,
     brain_mask: np.ndarray,
-    sigma: float = 1.0
+    sigma: float = P2_GRADIENT_SIGMA
 ) -> np.ndarray:
     """
     Synthesizes a 3D topographic elevation landscape for watershed flooding.
@@ -162,9 +190,9 @@ def generate_watershed_markers(
     brain_voxels_t2 = t2[brain_mask]
     brain_voxels_t1ce = t1ce[brain_mask]
 
-    flair_th = float(np.percentile(brain_voxels_flair, 85))
-    t2_th = float(np.percentile(brain_voxels_t2, 85))
-    t1ce_th = float(np.percentile(brain_voxels_t1ce, 90))
+    flair_th = float(np.percentile(brain_voxels_flair, P2_FLAIR_PERCENTILE))
+    t2_th = float(np.percentile(brain_voxels_t2, P2_T2_PERCENTILE))
+    t1ce_th = float(np.percentile(brain_voxels_t1ce, P2_T1CE_PERCENTILE))
 
     # Multi-modal tumor candidate region
     flair_t2_cand = (flair >= flair_th) & (t2 >= t2_th)
@@ -188,12 +216,11 @@ def generate_watershed_markers(
         internal_seeds = cand_opened if np.sum(cand_opened) > 0 else tumor_candidate
 
     # External Markers:
-    # 1. Non-brain tissue (skull/air outside brain mask)
-    # 2. Healthy brain tissue: normal intensity FLAIR (< 75th percentile)
-    #    located safely away from any tumor candidate (distance transform > 4 voxels)
+    # Healthy brain: normal intensity FLAIR (< P2_HEALTHY_PERCENTILE)
+    # located safely away from any tumor candidate (distance > P2_HEALTHY_DIST_VOXELS)
     dist_from_cand = ndi.distance_transform_edt(~cand_opened)
-    healthy_threshold = float(np.percentile(brain_voxels_flair, 75))
-    healthy_brain = brain_mask & (flair < healthy_threshold) & (dist_from_cand > 4.0)
+    healthy_threshold = float(np.percentile(brain_voxels_flair, P2_HEALTHY_PERCENTILE))
+    healthy_brain = brain_mask & (flair < healthy_threshold) & (dist_from_cand > P2_HEALTHY_DIST_VOXELS)
 
     # Construct the marker volume
     markers = np.zeros(flair.shape, dtype=np.int32)
@@ -281,7 +308,7 @@ def filter_connected_components(
         phys_vol = sz * voxel_volume_mm3
         if phys_vol >= min_volume_mm3 and sz >= 0.20 * top1_sz:
             min_dist = float(np.min(dist_from_top[labels == c]))
-            if min_dist <= 12.0:
+            if min_dist <= P2_SATELLITE_DIST_MM:
                 clean_mask |= (labels == c)
                 kept += 1
 

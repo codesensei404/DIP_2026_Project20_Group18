@@ -1,0 +1,32 @@
+======================================================================
+ TUNING SUMMARY: Pipeline 1.0 (Thresholding)
+ Patients in probe: 20  |  Valid: 20
+ Optuna trials: 20  |  Time: 33.3 min
+======================================================================
+
+ BEST CONFIGURATION (highest mean Dice)
+
+   P1_FLAIR_PERCENTILE                : 85.0
+   P1_T2_PERCENTILE                   : 79.0
+   P1_T1CE_PERCENTILE                 : 90.0
+   P1_MORPH_CLOSE_ITERS               : 1.0
+
+   Mean Dice        : 0.7364
+   Mean HD95 (mm)   : 19.30
+   Mean Sensitivity : 0.7017
+
+ TOP 5 CONFIGURATIONS
+
+   #1  Dice=0.7364  HD95=19.3mm  Sens=0.7017  |  P1_FLAIR_PERCENTILE=85.0  |  P1_T2_PERCENTILE=79.0  |  P1_T1CE_PERCENTILE=90.0  |  P1_MORPH_CLOSE_ITERS=1.0
+   #2  Dice=0.7364  HD95=19.3mm  Sens=0.7017  |  P1_FLAIR_PERCENTILE=85.0  |  P1_T2_PERCENTILE=79.0  |  P1_T1CE_PERCENTILE=90.0  |  P1_MORPH_CLOSE_ITERS=1.0
+   #3  Dice=0.7338  HD95=19.8mm  Sens=0.6874  |  P1_FLAIR_PERCENTILE=85.0  |  P1_T2_PERCENTILE=80.0  |  P1_T1CE_PERCENTILE=90.0  |  P1_MORPH_CLOSE_ITERS=1.0
+   #4  Dice=0.7316  HD95=20.0mm  Sens=0.6904  |  P1_FLAIR_PERCENTILE=84.0  |  P1_T2_PERCENTILE=80.0  |  P1_T1CE_PERCENTILE=89.0  |  P1_MORPH_CLOSE_ITERS=1.0
+   #5  Dice=0.7199  HD95=20.2mm  Sens=0.6734  |  P1_FLAIR_PERCENTILE=82.0  |  P1_T2_PERCENTILE=81.0  |  P1_T1CE_PERCENTILE=89.0  |  P1_MORPH_CLOSE_ITERS=1.0
+
+ APPLY THESE TO YOUR SEGMENTATION FILE:
+
+   P1_FLAIR_PERCENTILE = 85.0
+   P1_T2_PERCENTILE = 79.0
+   P1_T1CE_PERCENTILE = 90.0
+   P1_MORPH_CLOSE_ITERS = 1.0
+======================================================================

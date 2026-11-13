@@ -5,45 +5,45 @@
 ==============================================================================
 
 MEAN DICE SCORES
-  Pipeline 1 (Thresholding) : 0.6607
-  Pipeline 2 (Watershed)    : 0.6685
-  Pipeline 3 (Hybrid)       : 0.7128
+  Pipeline 1 (Thresholding) : 0.6983
+  Pipeline 2 (Watershed)    : 0.6775
+  Pipeline 3 (Hybrid)       : 0.7261
 
 MEAN IoU (JACCARD)
-  Pipeline 1                : 0.5306
-  Pipeline 2                : 0.5494
-  Pipeline 3                : 0.5915
+  Pipeline 1                : 0.5723
+  Pipeline 2                : 0.5609
+  Pipeline 3                : 0.6093
 
 MEAN HD95 (mm)
-  Pipeline 1                : 18.0455
-  Pipeline 2                : 28.2203
-  Pipeline 3                : 20.1737
+  Pipeline 1                : 19.3215
+  Pipeline 2                : 26.5670
+  Pipeline 3                : 19.9499
 
 MEAN SENSITIVITY (RECALL)
-  Pipeline 1                : 0.5718
-  Pipeline 2                : 0.7389
-  Pipeline 3                : 0.8083
+  Pipeline 1                : 0.6650
+  Pipeline 2                : 0.7321
+  Pipeline 3                : 0.7762
 
 MEAN PRECISION
-  Pipeline 1                : 0.8463
-  Pipeline 2                : 0.6719
-  Pipeline 3                : 0.6743
+  Pipeline 1                : 0.8047
+  Pipeline 2                : 0.6878
+  Pipeline 3                : 0.7230
 
 MEAN VOLUME SIMILARITY
-  Pipeline 1                : 0.7592
-  Pipeline 2                : 0.7983
-  Pipeline 3                : 0.8309
+  Pipeline 1                : 0.8120
+  Pipeline 2                : 0.8079
+  Pipeline 3                : 0.8555
 
 WIN TALLY (best Dice per patient)
         Pipeline  Patient_Count  Win_Percentage
-      P3: Hybrid             38            38.0
-   P2: Watershed             36            36.0
-P1: Thresholding             26            26.0
+      P3: Hybrid             42            42.0
+P1: Thresholding             29            29.0
+   P2: Watershed             29            29.0
 
 DELTA DICE: P3 (Hybrid) vs P1 (Thresholding)
-  Mean  : 0.0520
+  Mean  : 0.0279
 DELTA DICE: P3 (Hybrid) vs P2 (Watershed)
-  Mean  : 0.0443
+  Mean  : 0.0486
 DELTA DICE: P2 (Watershed) vs P1 (Thresholding)
-  Mean  : 0.0078
+  Mean  : -0.0208
 ==============================================================================

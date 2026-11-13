@@ -1,4 +1,4 @@
 Pipeline,Patient_Count,Win_Percentage
-P3: Hybrid,38,38.0
-P2: Watershed,36,36.0
-P1: Thresholding,26,26.0
+P3: Hybrid,42,42.0
+P1: Thresholding,29,29.0
+P2: Watershed,29,29.0

@@ -1,6 +1,6 @@
 Metric,Value
 patient_id,BraTS20_Training_023
-run_id,main_v2_watershed_023
+run_id,p2_v2_tuned_023
 region,WT
 true_positive_voxels,24269
 true_negative_voxels,8886503

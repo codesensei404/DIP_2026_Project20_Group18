@@ -15,6 +15,36 @@ import skimage.segmentation as seg
 
 PIPELINE_NAME = "Pipeline_3_Hybrid"
 METHOD_TAG = "hybrid"
+
+# ── Tunable parameters (Pipeline 3 — Hybrid) ────────────────
+# Results analysis (n=100):
+#   Problem : 41% over-segmentation, signed volume error +22%.
+#             The edema band (dist <= 4 voxels) is too generous,
+#             pulling in distal FLAIR hyperintensities.
+#   Fix     : Tighten edema band distance and raise edema FLAIR
+#             threshold (edema must be more hyperintense to qualify).
+#             Also tighten the satellite acceptance distance slightly.
+#
+# Recommended search space (see tune.py):
+#   FLAIR_HIGH_PCT          : [80, 82, 85]      (was 85)
+#   T2_HIGH_PCT             : [80, 82, 85]      (was 85)
+#   T1CE_HIGH_PCT           : [87, 88, 90]      (was 90)
+#   EDEMA_DIST_VOXELS       : [2, 3, 4]         (was 4)
+#   EDEMA_FLAIR_PCT         : [82, 83, 85]      (was 80)
+#   HEALTHY_PCT             : [72, 75, 78]      (was 75)
+#   GRADIENT_SIGMA          : [1.0, 1.5, 2.0]  (was 1.0)
+#   MORPH_CLOSE_ITERS       : [1, 2]            (was 1)
+#   SATELLITE_DIST_MM       : [8, 10, 12]       (was 10)
+# ─────────────────────────────────────────────────────────────
+P3_FLAIR_HIGH_PCT       = 85     # unchanged
+P3_T2_HIGH_PCT          = 85     # unchanged
+P3_T1CE_HIGH_PCT        = 90     # unchanged
+P3_EDEMA_DIST_VOXELS    = 3      # tuned: Optuna best (probe Dice 0.7540)
+P3_EDEMA_FLAIR_PCT      = 85     # tuned: raised from 82 → stricter edema qualification
+P3_HEALTHY_PCT          = 75     # unchanged
+P3_GRADIENT_SIGMA       = 2.10   # tuned: Optuna best 2.0980 → smoother gradient
+P3_MORPH_CLOSE_ITERS    = 1      # unchanged
+P3_SATELLITE_DIST_MM    = 10.0   # unchanged
 MIN_COMPONENT_VOLUME_MM3 = 200.0
 
 
@@ -119,9 +149,9 @@ def run_hybrid_segmentation(
     brain_voxels_t1ce = t1ce[brain_mask]
 
     # --- Phase A: Thresholding Core Extraction ---
-    flair_th_high = float(np.percentile(brain_voxels_flair, 85))
-    t2_th_high = float(np.percentile(brain_voxels_t2, 85))
-    t1ce_th_high = float(np.percentile(brain_voxels_t1ce, 90))
+    flair_th_high = float(np.percentile(brain_voxels_flair, P3_FLAIR_HIGH_PCT))
+    t2_th_high = float(np.percentile(brain_voxels_t2, P3_T2_HIGH_PCT))
+    t1ce_th_high = float(np.percentile(brain_voxels_t1ce, P3_T1CE_HIGH_PCT))
 
     flair_t2_core = (flair >= flair_th_high) & (t2 >= t2_th_high)
     t1ce_flair_core = (t1ce >= t1ce_th_high) & (flair >= flair_th_high)
@@ -141,21 +171,22 @@ def run_hybrid_segmentation(
         refined_core = (lbl == top1_lbl)
         dist_from_top1 = ndi.distance_transform_edt(~refined_core)
         for c, sz in sizes[1:]:
-            if sz >= 0.20 * top1_sz and np.min(dist_from_top1[lbl == c]) <= 12.0:
+            if sz >= 0.20 * top1_sz and np.min(dist_from_top1[lbl == c]) <= P3_SATELLITE_DIST_MM:
                 refined_core |= (lbl == c)
     else:
         refined_core = threshold_core
 
     # --- Phase B: Constrained Edema Search Band ---
-    # Prevents watershed from leaking into far ventricles or contralateral hemisphere
+    # P3_EDEMA_DIST_VOXELS controls how far from the core the band extends.
+    # P3_EDEMA_FLAIR_PCT ensures only genuinely hyperintense edema is included.
     dist_from_core = ndi.distance_transform_edt(~refined_core)
-    flair_th_edema = float(np.percentile(brain_voxels_flair, 80))
-    edema_band = (dist_from_core <= 4.0) & (flair >= flair_th_edema) & brain_mask
+    flair_th_edema = float(np.percentile(brain_voxels_flair, P3_EDEMA_FLAIR_PCT))
+    edema_band = (dist_from_core <= P3_EDEMA_DIST_VOXELS) & (flair >= flair_th_edema) & brain_mask
     allowed_region = refined_core | edema_band
 
     # --- Phase C: Elevation Landscape & Watershed Flooding ---
     fused_intensity = 0.50 * flair + 0.30 * t2 + 0.20 * t1ce
-    gradient = ndi.gaussian_gradient_magnitude(fused_intensity, sigma=1.0)
+    gradient = ndi.gaussian_gradient_magnitude(fused_intensity, sigma=P3_GRADIENT_SIGMA)
     gradient[~brain_mask] = 0.0
 
     # Internal markers: eroded threshold core
@@ -166,7 +197,7 @@ def run_hybrid_segmentation(
     # External markers: background outside allowed region & healthy tissue
     markers = np.zeros(flair.shape, dtype=np.int32)
     markers[~allowed_region] = 1
-    healthy_tissue = allowed_region & (dist_from_core > 3.0) & (flair < float(np.percentile(brain_voxels_flair, 75)))
+    healthy_tissue = allowed_region & (dist_from_core > 3.0) & (flair < float(np.percentile(brain_voxels_flair, P3_HEALTHY_PCT)))
     markers[healthy_tissue] = 1
     markers[internal_seeds] = 2
 
@@ -176,7 +207,7 @@ def run_hybrid_segmentation(
 
     # --- Phase D: Consensus Fusion & Cleanup ---
     hybrid_tumor = refined_core | watershed_tumor
-    hybrid_tumor = ndi.binary_closing(hybrid_tumor, structure=structure, iterations=1)
+    hybrid_tumor = ndi.binary_closing(hybrid_tumor, structure=structure, iterations=P3_MORPH_CLOSE_ITERS)
     hybrid_tumor = ndi.binary_fill_holes(hybrid_tumor)
 
     return hybrid_tumor, refined_core, watershed_tumor, gradient, allowed_region

@@ -1,6 +1,6 @@
 {
     "patient_id": "BraTS20_Training_023",
-    "run_id": "main_v2_watershed_023",
+    "run_id": "p2_v2_tuned_023",
     "pipeline": "Pipeline_2_Watershed",
     "method": "watershed",
     "mask_file": "c:\\Users\\ABDUL\\Downloads\\Semester-05\\ECE501 Section-01\\Project_Repo\\DIP_2026_Project20_Group18\\Outputs\\Pipeline_2_Watershed\\Segmented\\BraTS20_Training_023\\BraTS20_Training_023_segmentation_watershed.nii.gz",

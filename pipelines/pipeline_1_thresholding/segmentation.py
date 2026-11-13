@@ -197,6 +197,34 @@ def compute_percentile_threshold(
 
 
 # ============================================================
+# TUNABLE PARAMETERS  (Pipeline 1 — Thresholding)
+# ============================================================
+# Results analysis (n=100):
+#   Problem : 64% under-segmentation, mean sensitivity 0.572,
+#             signed relative volume error -0.311 (31% under-prediction)
+#   Fix     : Lower FLAIR/T2 thresholds to recover missed peritumoral edema.
+#             Raising min_volume_mm3 helps keep the larger-recall candidates
+#             while still discarding tiny isolated hotspots.
+#
+# Recommended search space (see tune.py):
+#   FLAIR_PERCENTILE  : [78, 80, 82, 85]      (was 85)
+#   T2_PERCENTILE     : [78, 80, 82, 85]      (was 85)
+#   T1CE_PERCENTILE   : [87, 88, 89, 90]      (was 90)
+#   MORPH_CLOSE_ITERS : [1, 2, 3]             (was 2)
+#   MIN_VOLUME_MM3    : [150, 200, 300]        (was 200)
+#   SATELLITE_RATIO   : [0.15, 0.20, 0.25]    (was 0.20)
+#   SATELLITE_DIST_MM : [10, 12, 15]          (was 12)
+# ──────────────────────────────────────────────────────────
+P1_FLAIR_PERCENTILE   = 85      # tuned: Optuna best (probe Dice 0.7364)
+P1_T2_PERCENTILE      = 79      # tuned: lowered from 85 → better recall
+P1_T1CE_PERCENTILE    = 90      # tuned: unchanged
+P1_MORPH_CLOSE_ITERS  = 1       # tuned: reduced from 2 → less mask erosion
+P1_MIN_VOLUME_MM3     = 200.0   # unchanged
+P1_SATELLITE_RATIO    = 0.20    # unchanged
+P1_SATELLITE_DIST_MM  = 12.0    # unchanged
+
+
+# ============================================================
 # MULTI-SEQUENCE CANDIDATE GENERATION
 # ============================================================
 
@@ -212,7 +240,7 @@ def generate_tumor_candidates(
         compute_percentile_threshold(
             flair,
             brain_mask,
-            85
+            P1_FLAIR_PERCENTILE
         )
     )
 
@@ -220,7 +248,7 @@ def generate_tumor_candidates(
         compute_percentile_threshold(
             t2,
             brain_mask,
-            85
+            P1_T2_PERCENTILE
         )
     )
 
@@ -228,7 +256,7 @@ def generate_tumor_candidates(
         compute_percentile_threshold(
             t1ce,
             brain_mask,
-            90
+            P1_T1CE_PERCENTILE
         )
     )
 
@@ -308,7 +336,7 @@ def refine_candidate_mask(
     refined = ndi.binary_closing(
         refined,
         structure=structure,
-        iterations=2
+        iterations=P1_MORPH_CLOSE_ITERS
     )
 
     refined = ndi.binary_fill_holes(
@@ -325,7 +353,7 @@ def refine_candidate_mask(
 def filter_connected_components(
     mask,
     reference_image,
-    min_volume_mm3=200.0
+    min_volume_mm3=P1_MIN_VOLUME_MM3
 ):
     """
     Anatomical clustering prior: retains primary tumor mass and proximate
@@ -336,8 +364,8 @@ def filter_connected_components(
       1. Always keep the single largest connected component (primary mass).
       2. Keep secondary components only if:
            a. Physical volume >= min_volume_mm3, AND
-           b. Size >= 20% of primary mass, AND
-           c. Euclidean distance to primary mass <= 12.0 mm
+           b. Size >= P1_SATELLITE_RATIO of primary mass, AND
+           c. Euclidean distance to primary mass <= P1_SATELLITE_DIST_MM
     """
     structure = ndi.generate_binary_structure(3, 2)
     labels, num_components = ndi.label(mask, structure=structure)
@@ -366,9 +394,9 @@ def filter_connected_components(
     # Conditionally keep satellites
     for c, sz in sizes[1:]:
         phys_vol = sz * voxel_volume_mm3
-        if phys_vol >= min_volume_mm3 and sz >= 0.20 * top1_sz:
+        if phys_vol >= min_volume_mm3 and sz >= P1_SATELLITE_RATIO * top1_sz:
             min_dist = float(np.min(dist_from_top[labels == c]))
-            if min_dist <= 12.0:
+            if min_dist <= P1_SATELLITE_DIST_MM:
                 clean_mask |= (labels == c)
                 kept += 1
 

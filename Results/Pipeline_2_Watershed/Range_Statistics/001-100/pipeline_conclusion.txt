@@ -5,31 +5,31 @@
 Patients evaluated      : 100
 
 OVERLAP
-  Mean Dice             : 0.669 +/- 0.256
-                          Median 0.756  |  95% CI [0.618, 0.716]
-  Mean IoU (Jaccard)    : 0.549
-  Mean Bounding-Box IoU : 0.504
-  Mean Volume Similarity: 0.798
+  Mean Dice             : 0.678 +/- 0.260
+                          Median 0.775  |  95% CI [0.625, 0.726]
+  Mean IoU (Jaccard)    : 0.561
+  Mean Bounding-Box IoU : 0.519
+  Mean Volume Similarity: 0.808
 
 CLASSIFICATION
-  Mean Sensitivity      : 0.739
-  Mean Precision        : 0.672
-  Mean Specificity      : 0.996
-  Mean FPR              : 0.004
-  Mean FNR              : 0.261
+  Mean Sensitivity      : 0.732
+  Mean Precision        : 0.688
+  Mean Specificity      : 0.997
+  Mean FPR              : 0.003
+  Mean FNR              : 0.268
   Mean Accuracy         : 0.995
 
 BOUNDARY
-  Mean HD95             : 28.22 mm
-  Mean ASSD             : 10.65 mm
+  Mean HD95             : 26.57 mm
+  Mean ASSD             : 10.23 mm
 
 VOLUME
-  Mean Relative Error   : 0.883
-  Mean Signed Rel Err   : 0.701
+  Mean Relative Error   : 0.825
+  Mean Signed Rel Err   : 0.633
 
 QUALITY TIERS
-  Excellent (>= 0.85)   : 34 patients
-  Good      (>= 0.70)   : 26 patients
-  Moderate  (>= 0.50)   : 17 patients
-  Poor      (<  0.50)   : 23 patients
+  Excellent (>= 0.85)   : 35 patients
+  Good      (>= 0.70)   : 28 patients
+  Moderate  (>= 0.50)   : 19 patients
+  Poor      (<  0.50)   : 18 patients
 ===========================================================================

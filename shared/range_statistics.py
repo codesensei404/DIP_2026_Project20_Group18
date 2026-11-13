@@ -33,11 +33,8 @@ PATIENT_NUMBER_WIDTH = 3
 EVALUATION_REGION    = "WT"
 
 _THIS_DIR   = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = (
-    os.path.dirname(_THIS_DIR)
-    if os.path.basename(_THIS_DIR).lower() == "codes"
-    else _THIS_DIR
-)
+# shared/ lives directly under the project root
+PROJECT_DIR = os.path.dirname(_THIS_DIR)
 
 PIPELINES = {
     1: {

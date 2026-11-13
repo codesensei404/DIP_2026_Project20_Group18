@@ -1,0 +1,30 @@
+======================================================================
+ TUNING SUMMARY: Pipeline 3.0 (Hybrid)
+ Patients in probe: 20  |  Valid: 20
+ Optuna trials: 20  |  Time: 37.3 min
+======================================================================
+
+ BEST CONFIGURATION (highest mean Dice)
+
+   P3_EDEMA_DIST_VOXELS               : 3.0
+   P3_EDEMA_FLAIR_PCT                 : 85.0
+   P3_GRADIENT_SIGMA                  : 2.0979909127171075
+
+   Mean Dice        : 0.7540
+   Mean HD95 (mm)   : 20.31
+   Mean Sensitivity : 0.8089
+
+ TOP 5 CONFIGURATIONS
+
+   #1  Dice=0.7540  HD95=20.3mm  Sens=0.8089  |  P3_EDEMA_DIST_VOXELS=3.0  |  P3_EDEMA_FLAIR_PCT=85.0  |  P3_GRADIENT_SIGMA=2.0979909127171075
+   #2  Dice=0.7540  HD95=20.3mm  Sens=0.8089  |  P3_EDEMA_DIST_VOXELS=3.0  |  P3_EDEMA_FLAIR_PCT=85.0  |  P3_GRADIENT_SIGMA=2.075048321723368
+   #3  Dice=0.7540  HD95=20.3mm  Sens=0.8089  |  P3_EDEMA_DIST_VOXELS=3.0  |  P3_EDEMA_FLAIR_PCT=85.0  |  P3_GRADIENT_SIGMA=1.9912835879384303
+   #4  Dice=0.7540  HD95=20.3mm  Sens=0.8089  |  P3_EDEMA_DIST_VOXELS=3.0  |  P3_EDEMA_FLAIR_PCT=85.0  |  P3_GRADIENT_SIGMA=2.0282569121934015
+   #5  Dice=0.7514  HD95=20.4mm  Sens=0.8110  |  P3_EDEMA_DIST_VOXELS=3.0  |  P3_EDEMA_FLAIR_PCT=84.0  |  P3_GRADIENT_SIGMA=1.7918512234014636
+
+ APPLY THESE TO YOUR SEGMENTATION FILE:
+
+   P3_EDEMA_DIST_VOXELS = 3.0
+   P3_EDEMA_FLAIR_PCT = 85.0
+   P3_GRADIENT_SIGMA = 2.0979909127171075
+======================================================================
